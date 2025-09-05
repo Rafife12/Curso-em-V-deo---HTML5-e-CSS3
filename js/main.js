@@ -1,336 +1,186 @@
-;(function () {
-	
-	'use strict';
-
-	var isMobile = {
-		Android: function() {
-			return navigator.userAgent.match(/Android/i);
-		},
-			BlackBerry: function() {
-			return navigator.userAgent.match(/BlackBerry/i);
-		},
-			iOS: function() {
-			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-		},
-			Opera: function() {
-			return navigator.userAgent.match(/Opera Mini/i);
-		},
-			Windows: function() {
-			return navigator.userAgent.match(/IEMobile/i);
-		},
-			any: function() {
-			return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-		}
-	};
-
-	var mobileMenuOutsideClick = function() {
-
-		$(document).click(function (e) {
-	    var container = $("#fh5co-offcanvas, .js-fh5co-nav-toggle");
-	    if (!container.is(e.target) && container.has(e.target).length === 0) {
-
-	    	if ( $('body').hasClass('offcanvas') ) {
-
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-				
-	    	}
-	    
-	    	
-	    }
-		});
-
-	};
-
-
-	var offcanvasMenu = function() {
-
-		$('#page').prepend('<div id="fh5co-offcanvas" />');
-		$('#page').prepend('<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle fh5co-nav-white"><i></i></a>');
-		var clone1 = $('.menu-1 > ul').clone();
-		$('#fh5co-offcanvas').append(clone1);
-		var clone2 = $('.menu-2 > ul').clone();
-		$('#fh5co-offcanvas').append(clone2);
-
-		$('#fh5co-offcanvas .has-dropdown').addClass('offcanvas-has-dropdown');
-		$('#fh5co-offcanvas')
-			.find('li')
-			.removeClass('has-dropdown');
-
-		// Hover dropdown menu on mobile
-		$('.offcanvas-has-dropdown').mouseenter(function(){
-			var $this = $(this);
-
-			$this
-				.addClass('active')
-				.find('ul')
-				.slideDown(500, 'easeOutExpo');				
-		}).mouseleave(function(){
-
-			var $this = $(this);
-			$this
-				.removeClass('active')
-				.find('ul')
-				.slideUp(500, 'easeOutExpo');				
-		});
-
-
-		$(window).resize(function(){
-
-			if ( $('body').hasClass('offcanvas') ) {
-
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-				
-	    	}
-		});
-	};
-
-
-	var burgerMenu = function() {
-
-		$('body').on('click', '.js-fh5co-nav-toggle', function(event){
-			var $this = $(this);
-
-
-			if ( $('body').hasClass('overflow offcanvas') ) {
-				$('body').removeClass('overflow offcanvas');
-			} else {
-				$('body').addClass('overflow offcanvas');
-			}
-			$this.toggleClass('active');
-			event.preventDefault();
-
-		});
-	};
-
-	var fullHeight = function() {
-
-		if ( !isMobile.any() ) {
-			$('.js-fullheight').css('height', $(window).height());
-			$(window).resize(function(){
-				$('.js-fullheight').css('height', $(window).height());
-			});
-		}
-
-	};
+console.log('%c Proudly Crafted with ZiOn.', 'background: #222; color: #bada55');
 
 
 
-	var contentWayPoint = function() {
-		var i = 0;
-		$('.animate-box').waypoint( function( direction ) {
+(function($) {
+  $.fn.countdown = function(options, callback) {
+    //custom 'this' selector
+    thisEl = $(this); 
+  
+    // array of custom settings
+    var settings = { 
+      'date': null,
+      'format': null
+    };
 
-			if( direction === 'down' && !$(this.element).hasClass('animated-fast') ) {
-				
-				i++;
+    // append the settings array to options
+    if(options) {
+      $.extend(settings, options);
+    }
+   
+    //create the countdown processing function
+    function countdown_proc() {
+    var eventDate = Date.parse(settings.date) / 1000;
+    var currentDate = Math.floor($.now() / 1000);
+    
+    if(eventDate <= currentDate) {
+    callback.call(this);
+    clearInterval(interval);
+    }
+      
+    var seconds = eventDate - currentDate;
+    
+    var days = Math.floor(seconds / (60 * 60 * 24)); 
+    //calculate the number of days
+    
+    seconds -= days * 60 * 60 * 24; 
+    //update the seconds variable with number of days removed
+    
+    var hours = Math.floor(seconds / (60 * 60));
+    seconds -= hours * 60 * 60; 
+    //update the seconds variable with number of hours removed
+    
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes * 60;
 
-				$(this.element).addClass('item-animate');
-				setTimeout(function(){
+    //logic for the two_digits ON setting
+    if(settings.format == "on") {
+        days = (String(days).length >= 2) ? days : "0" + days;
+        hours = (String(hours).length >= 2) ? hours : "0" + hours;
+        minutes = (String(minutes).length >= 2) ? minutes : "0" + minutes;
+        seconds = (String(seconds).length >= 2) ? seconds : "0" + seconds;
+    }
+    
+    //update the countdown's html values.
+    thisEl.find(".days").text(days);
+    thisEl.find(".hours").text(hours);
+    thisEl.find(".minutes").text(minutes);
+    thisEl.find(".seconds").text(seconds);
+  }
 
-					$('body .animate-box.item-animate').each(function(k){
-						var el = $(this);
-						setTimeout( function () {
-							var effect = el.data('animate-effect');
-							if ( effect === 'fadeIn') {
-								el.addClass('fadeIn animated-fast');
-							} else if ( effect === 'fadeInLeft') {
-								el.addClass('fadeInLeft animated-fast');
-							} else if ( effect === 'fadeInRight') {
-								el.addClass('fadeInRight animated-fast');
-							} else {
-								el.addClass('fadeInUp animated-fast');
-							}
+    //run the function
+    countdown_proc();
 
-							el.removeClass('item-animate');
-						},  k * 200, 'easeInOutExpo' );
-					});
-					
-				}, 100);
-				
-			}
+    //loop the function
+    interval = setInterval(countdown_proc, 1000);
+  };
 
-		} , { offset: '85%' } );
-	};
-
-
-	var dropdown = function() {
-
-		$('.has-dropdown').mouseenter(function(){
-
-			var $this = $(this);
-			$this
-				.find('.dropdown')
-				.css('display', 'block')
-				.addClass('animated-fast fadeInUpMenu');
-
-		}).mouseleave(function(){
-			var $this = $(this);
-
-			$this
-				.find('.dropdown')
-				.css('display', 'none')
-				.removeClass('animated-fast fadeInUpMenu');
-		});
-
-	};
-
-
-	var goToTop = function() {
-
-		$('.js-gotop').on('click', function(event){
-			
-			event.preventDefault();
-
-			$('html, body').animate({
-				scrollTop: $('html').offset().top
-			}, 500, 'easeInOutExpo');
-			
-			return false;
-		});
-
-		$(window).scroll(function(){
-
-			var $win = $(window);
-			if ($win.scrollTop() > 200) {
-				$('.js-top').addClass('active');
-			} else {
-				$('.js-top').removeClass('active');
-			}
-
-			if ( $win.scrollTop() > 100 ) {
-				$('.fh5co-nav').addClass('scrolled');
-			} else {
-				$('.fh5co-nav').removeClass('scrolled');
-			}
-
-		});
-	
-	};
+}) (jQuery);
 
 
-	// Loading page
-	var loaderPage = function() {
-		$(".fh5co-loader").fadeOut("slow");
-	};
+
+//Provide the plugin settings
+$("#countdown").countdown({
+    //The countdown end date
+    date: "1 January 2018 12:00:00",
+    
+    // on (03:07:52) | off (3:7:52) - two_digits set to ON maintains layout consistency
+    format: "on"
+}, 
+
+function() {
+// This will run when the countdown ends
+ alert("We're Out Now");
+});
+     
+       
+
+function setHeights() {
+    var windowHeight = $(window).height();
+    $('.slide').height(windowHeight);
+}
+
+setHeights();
+
+$(window).resize(function() {
+  setHeights();
+});
+
+function addSticky() {
+  $('.slide').each(function() {
+    var scrollerAnchor = $(this).offset().top;
+    if (window.scrollY >= scrollerAnchor) {
+      $(this).addClass('fix-it');
+    } else {
+      $(this).removeClass('fix-it');
+    }
+  });
+}
+
+$(window).scroll(function() {
+  addSticky();
+});
 
 
-	var counterWayPoint = function() {
-		if ($('#fh5co-counter').length > 0 ) {
-			$('#fh5co-counter').waypoint( function( direction ) {
-										
-				if( direction === 'down' && !$(this.element).hasClass('animated') ) {
-					setTimeout( counter , 400);					
-					$(this.element).addClass('animated');
-				}
-			} , { offset: '90%' } );
-		}
-	};
+(function(){
 
-	var sliderMain = function() {
-		
-	  	$('#fh5co-slider-wrwap .flexslider').flexslider({
-			animation: "fade",
-			slideshowSpeed: 5000,
-			directionNav: true,
-			start: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			},
-			before: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			}
+  if(document.getElementById('slideshow')==null) return;
 
-	  	});
+  // we set the 'fx' class on the first image when the page loads
+  document.getElementById('slideshow').getElementsByTagName('img')[0].className = "fx";
+  
+  // this calls the kenBurns function every 4 seconds
+  // you can increase or decrease this value to get different effects
+  window.setInterval(kenBurns, 8000);   
+  
+  // the third variable is to keep track of where we are in the loop
+  // if it is set to 1 (instead of 0) it is because the first image is styled when the page loads
+  var images          = document.getElementById('slideshow').getElementsByTagName('img'),
+      numberOfImages  = images.length,
+      i               = 1;
 
-	  	$('#fh5co-slider-wrwap .flexslider .slides > li').css('height', $(window).height());	
-	  	$(window).resize(function(){
-	  		$('#fh5co-slider-wrwap .flexslider .slides > li').css('height', $(window).height());	
-	  	});
+  function kenBurns() {
+  if(i==numberOfImages){ i = 0;}
+  images[i].className = "fx";
 
-	  	
-	};
+  // we can't remove the class from the previous element or we'd get a bouncing effect so we clean up the one before last
+  // (there must be a smarter way to do this though)
+  if(i===0){ images[numberOfImages-2].className = "";}
+  if(i===1){ images[numberOfImages-1].className = "";}
+  if(i>1){ images[i-2].className = "";}
+  i++;
 
-	var parallax = function() {
-		if ( !isMobile.any() ) {
-			$(window).stellar();
-		}
-	};
+  }
+  
+})();
 
-	var DateTimePickerFunc = function() {
-		if ($('#taskdatetime').length > 0) {
-			$('#taskdatetime').datetimepicker();
-		}
-	}
 
-	var zoomFunc = function() {
-		if ($('.zoomerang').length > 0) {
-	   	// Zoomerang.config({maxHeight:730,maxWidth:900}).listen('.zoomerang');
+$("#header_slide").owlCarousel({
+    items: 1,
+    loop:true,
+    autoplay: true,
+    autoplaySpeed: 1500
+});
 
-	   	$('.fh5co-bg-img').each(function(){
-	   		$(this).css('width', '100%');
-	   	});
-	   	Zoomerang
-                .config({
-                    maxHeight: 900,
-                    maxWidth: 800,
-                    bgColor: '#000',
-                    bgOpacity: .85,
-                    onOpen: openCallback,
-                    onClose: closeCallback,
-                    onBeforeOpen: beforeOpenCallback,
-                    onBeforeClose: beforeCloseCallback
-                })
-                .listen('.zoomerang')
 
-            function openCallback (el) {
-                console.log('zoomed in on: ')
-                // console.log(el)
+$('#subscription-form').submit(function(e) {
+
+    e.preventDefault();
+    var $form           = $('#subscription-form');
+    var submit          = $('#subscribe-button');
+    var ajaxResponse    = $('#subscription-response');
+    var email           = $('#subscriber-email').val();
+
+    $.ajax({
+        type: 'POST',
+        url: '././php/subscribe.php',
+        dataType: 'json',
+        data: {
+            email: email
+        },
+        cache: false,
+        beforeSend: function(result) {
+            submit.val("Joining...");
+        },
+        success: function(result) {
+            if(result.sendstatus == 1) {
+                ajaxResponse.html(result.message);
+                $form.fadeOut(500);
+            } else {
+                ajaxResponse.html(result.message);
+                submit.val("Join");
             }
+        }
+    });
 
-            function closeCallback (el) {
-                console.log('zoomed out on: ')
-                // console.log(el)
-            }
-
-            function beforeOpenCallback (el) {
-            	console.log('on before zoomed in on:')
-            	// console.log(el)
-            }
-
-            function beforeCloseCallback (el) {
-            	console.log('on before zoomed out on:')
-            	// console.log(el)
-            }
-
-	   }
-	}
-
-	
-	$(function(){
-		mobileMenuOutsideClick();
-		offcanvasMenu();
-		burgerMenu();
-		contentWayPoint();
-		sliderMain();
-		dropdown();
-		goToTop();
-		loaderPage();
-		counterWayPoint();
-		fullHeight();
-		parallax();
-		DateTimePickerFunc();
-
-		$('.fh5co-bg-img').each(function(){
-   		$(this).css('width', '100%');
-   	});
-		// zoomFunc();
-	});
-
-
-}());
+});

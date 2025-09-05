@@ -12,27 +12,27 @@ body {
 body #image-background {
   position: fixed;
   top: 50%;
-  left: 50%;
+  right: 50%;
   min-width: 100%;
   min-height: 100%;
   width: 100%;
   height: auto;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  -ms-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(50%) translateY(-50%);
+  -ms-transform: translateX(50%) translateY(-50%);
+  transform: translateX(50%) translateY(-50%);
 }
 
 body #video-background {
   position: fixed;
   top: 50%;
-  left: 50%;
+  right: 50%;
   min-width: 100%;
   min-height: 100%;
   width: auto;
   height: auto;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  -ms-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(50%) translateY(-50%);
+  -ms-transform: translateX(50%) translateY(-50%);
+  transform: translateX(50%) translateY(-50%);
   background-size: cover;
   overflow: hidden;
 }
@@ -205,39 +205,39 @@ input.notify-me:hover {
   width: 100%;
   height: 100%;
   top: 0;
-  left: 0;
+  right: 0;
   opacity: 0;
   transition-property: opacity, -webkit-transform;
   transition-property: opacity, transform;
   transition-property: opacity, transform, -webkit-transform;
   transition-duration: 3s, 8s;
-  -webkit-transform-origin: bottom left;
-  -ms-transform-origin: bottom left;
-  transform-origin: bottom left;
+  -webkit-transform-origin: bottom right;
+  -ms-transform-origin: bottom right;
+  transform-origin: bottom right;
 }
 
 #slideshow img {
-  -webkit-transform-origin: bottom left;
-  -ms-transform-origin: bottom left;
-  transform-origin: bottom left;
+  -webkit-transform-origin: bottom right;
+  -ms-transform-origin: bottom right;
+  transform-origin: bottom right;
 }
 
 #slideshow :nth-child(2n+1) {
-  -webkit-transform-origin: top right;
-  -ms-transform-origin: top right;
-  transform-origin: top right;
-}
-
-#slideshow :nth-child(3n+1) {
   -webkit-transform-origin: top left;
   -ms-transform-origin: top left;
   transform-origin: top left;
 }
 
+#slideshow :nth-child(3n+1) {
+  -webkit-transform-origin: top right;
+  -ms-transform-origin: top right;
+  transform-origin: top right;
+}
+
 #slideshow :nth-child(4n+1) {
-  -webkit-transform-origin: bottom right;
-  -ms-transform-origin: bottom right;
-  transform-origin: bottom right;
+  -webkit-transform-origin: bottom left;
+  -ms-transform-origin: bottom left;
+  transform-origin: bottom left;
 }
 
 #slideshow .fx:first-child + img ~ img {
@@ -327,7 +327,7 @@ a.website:hover {
   min-width: 100%;
   min-height: 100%;
   top: 0;
-  left: 0;
+  right: 0;
   opacity: 1;
   background-size: cover;
   background-repeat: repeat;
